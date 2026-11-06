@@ -1,0 +1,41 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ negocio.nombre }}{% endblock %}</title>
+  <meta name="description" content="{{ negocio.eslogan }}">
+  <link rel="icon" href="{% static 'web/fixohm-icono.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'web/estilos.css' %}">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="contenedor cabecera__fila">
+      <a href="/" class="logo">
+        <img src="{% static 'web/fixohm-icono.svg' %}" alt="" width="34" height="34">
+        <span>{% if negocio.nombre == "FixOhm" %}Fix<span class="resaltado">Ohm</span>{% else %}{{ negocio.nombre }}{% endif %}</span>
+      </a>
+      <nav class="menu">
+        <a href="#servicios">Servicios</a>
+        <a href="#proceso">Cómo trabajamos</a>
+        <a href="#contacto" class="boton boton--chico">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>{% block contenido %}{% endblock %}</main>
+
+  <footer class="pie">
+    <div class="contenedor pie__fila">
+      <p>© {% now "Y" %} {{ negocio.nombre }}</p>
+      <p>{% if negocio.direccion %}{{ negocio.direccion }}{% endif %}{% if negocio.telefono %} · {{ negocio.telefono }}{% endif %}</p>
+    </div>
+  </footer>
+
+  {% if negocio.whatsapp %}
+  <a class="whatsapp-flotante" href="https://wa.me/{{ negocio.whatsapp }}?text={{ 'Hola, quiero consultar por una reparación'|urlencode }}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    {% include "web/icono_whatsapp.html" %}
+  </a>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends "web/base.html" %}
+
+{% block contenido %}
+<section class="portada">
+  <div class="contenedor portada__fila">
+    <div>
+      <p class="etiqueta">Servicio técnico especializado</p>
+      <h1>Tu equipo, reparado <span class="resaltado">a nivel chip.</span></h1>
+      <p class="portada__texto">{{ negocio.eslogan }}</p>
+      <div class="portada__botones">
+        <a href="#contacto" class="boton">Pedir presupuesto</a>
+        {% if negocio.whatsapp %}
+        <a href="https://wa.me/{{ negocio.whatsapp }}" class="boton boton--borde" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+        {% elif negocio.telefono %}
+        <a href="tel:{{ negocio.telefono }}" class="boton boton--borde">Llamar al {{ negocio.telefono }}</a>
+        {% endif %}
+      </div>
+    </div>
+    <ul class="portada__lista">
+      <li><strong>Computadoras</strong><span>Escritorio y notebooks</span></li>
+      <li><strong>Monitores</strong><span>Sin imagen, líneas, parpadeo</span></li>
+      <li><strong>Tarjetas gráficas</strong><span>Artefactos, sin video, temperatura</span></li>
+      <li><strong>Microsoldadura</strong><span>Chips, MOSFET, conectores</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="servicios" class="seccion">
+  <div class="contenedor">
+    <h2>Servicios</h2>
+    <p class="seccion__intro">Trabajamos con equipos de todas las marcas.</p>
+    <div class="tarjetas">
+      {% for servicio in servicios %}
+      <article class="tarjeta">
+        {% include "web/icono.html" with icono=servicio.icono %}
+        <h3>{{ servicio.nombre }}</h3>
+        <p>{{ servicio.descripcion|linebreaksbr }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="proceso" class="seccion seccion--foto">
+  <div class="contenedor">
+    <h2>Cómo trabajamos</h2>
+    <ol class="pasos">
+      <li><h3>Recepción</h3><p>Traes tu equipo o nos cuentas el problema por mensaje.</p></li>
+      <li><h3>Diagnóstico</h3><p>Revisamos la placa y encontramos el componente que falla.</p></li>
+      <li><h3>Presupuesto</h3><p>Te explicamos la reparación y el precio. Tú decides si seguimos.</p></li>
+      <li><h3>Reparación y prueba</h3><p>Reparamos y probamos el equipo antes de entregártelo.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="contacto" class="seccion seccion--contacto">
+  <div class="contenedor contacto">
+    <div>
+      <h2>Contacto</h2>
+      <p class="seccion__intro">Cuéntanos qué equipo tienes y qué le pasa. Te respondemos con un presupuesto estimado.</p>
+      <dl class="datos">
+        {% if negocio.telefono %}<dt>Teléfono</dt><dd><a href="tel:{{ negocio.telefono }}">{{ negocio.telefono }}</a></dd>{% endif %}
+        {% if negocio.whatsapp %}<dt>WhatsApp</dt><dd><a href="https://wa.me/{{ negocio.whatsapp }}" target="_blank" rel="noopener">Enviar mensaje</a></dd>{% endif %}
+        {% if negocio.email %}<dt>Correo</dt><dd><a href="mailto:{{ negocio.email }}">{{ negocio.email }}</a></dd>{% endif %}
+        {% if negocio.direccion %}<dt>Dirección</dt><dd>{% if negocio.mapa_url %}<a href="{{ negocio.mapa_url }}" target="_blank" rel="noopener">{{ negocio.direccion }}</a>{% else %}{{ negocio.direccion }}{% endif %}</dd>{% endif %}
+        {% if negocio.horario %}<dt>Horario</dt><dd>{{ negocio.horario }}</dd>{% endif %}
+      </dl>
+    </div>
+
+    <form method="post" class="formulario" novalidate>
+      {% csrf_token %}
+      {% for m in messages %}<p class="aviso">{{ m }}</p>{% endfor %}
+      {% for campo in form %}
+      <label>
+        <span>{{ campo.label|capfirst }}{% if not campo.field.required %} <small>(opcional)</small>{% endif %}</span>
+        {{ campo }}
+        {% if campo.help_text %}<small class="ayuda">{{ campo.help_text }}</small>{% endif %}
+        {% for error in campo.errors %}<small class="error">{{ error }}</small>{% endfor %}
+      </label>
+      {% endfor %}
+      <button type="submit" class="boton">Enviar consulta</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
